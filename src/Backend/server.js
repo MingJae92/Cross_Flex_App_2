@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import registerRoutes from './register_routes.js';
@@ -6,7 +7,6 @@ import registerRoutes from './register_routes.js';
 dotenv.config({ path: '../../config/.env' });
 
 const app = express();
-const route = express.Router();
 const port = process.env.PORT || 9000;
 const databaseURL = process.env.MONGO_DB_URI;
 
@@ -18,9 +18,11 @@ const connectDB = async () => {
         });
         console.log('Database connected');
 
-        // Once the database is connected, set up routes and start the server
+        // Set up middleware
+        app.use(cors());
         app.use(express.json());
-        app.use('/v1', route);
+
+        // Set up routes
         app.use('/register', registerRoutes);
 
         app.listen(port, () => {

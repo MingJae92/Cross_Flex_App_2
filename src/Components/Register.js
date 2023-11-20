@@ -66,7 +66,7 @@ function Register() {
   const handleRegister = async (data) => {
     
     try {
-     await axios.post("http://localhost:9000/register", data)
+     await axios.post("/register", data)
       console.log(JSON.stringify(data));
       alert('You are now registered!');
       

@@ -4,7 +4,6 @@ import { Form, Button } from 'react-bootstrap';
 import RegisterForm from '../img/bg.jpg';
 import axios from 'axios';
 
-
 function Register() {
   // Styles for the container, image, and header
   const containerStyle = {
@@ -63,11 +62,13 @@ function Register() {
   });
   
 
+  const apiKey = process.env.REACT_APP_API_URL
   const handleRegister = async (data) => {
     
     try {
-     await axios.post("/register", data)
+     await axios.post(`${apiKey}/register`, data)
       console.log(JSON.stringify(data));
+      console.log(apiKey)
       alert('You are now registered!');
       
       // Assuming watchFields returns the password value
@@ -78,6 +79,7 @@ function Register() {
       
     } catch (error) {
       console.error('Registration failed:', error);
+      console.log(apiKey)
       // You can handle the error here, for example, show an error message to the user
       alert('Registration failed. Please try again.');
     }

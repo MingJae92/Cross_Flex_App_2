@@ -1,4 +1,4 @@
-import { mongoose } from "mongoose";
+import mongoose from "mongoose";
 
 const registerSchema = new mongoose.Schema({
     username: {
@@ -17,8 +17,8 @@ const registerSchema = new mongoose.Schema({
         type: String,
         required: true,
     }
-})
+});
 
-const Register = mongoose.model("Register", registerSchema)
+const Register = mongoose.model("Register", registerSchema);
 
-export default Register
+export default Register;

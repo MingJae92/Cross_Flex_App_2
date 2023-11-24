@@ -20,32 +20,33 @@ const registerSchema = new mongoose.Schema(
       required: true,
       minlength: 8,
     },
-    
+    confirmPassword:{
+        type: String,
+        required: true,
+        minlength:8,
+    }
   },
   { timestamps: true }
 );
 
 registerSchema.pre('save', async function (next) {
-  try {
-    if (this.isModified('password') || this.isNew) {
-      const hashedPassword = await bcrypt.hash(this.password, 10);
-      this.password = hashedPassword;
+    try {
+      if (this.isModified('password') || this.isNew) {
+        const hashedPassword = await bcrypt.hash(this.password, 10);
+        this.password = hashedPassword;
+      }
+  
+      if (this.isModified('confirmPassword') || this.isNew) {
+        const hashedConfirmPassword = await bcrypt.hash(this.confirmPassword, 10);
+        this.confirmPassword = hashedConfirmPassword;
+      }
+  
+      next();
+    } catch (error) {
+      next(error);
     }
-    next();
-  } catch (error) {
-    next(error);
-  }
-});
-
-// Add a custom error message for duplicate key violation
-registerSchema.post('save', (error, doc, next) => {
-  if (error.name === 'MongoError' && error.code === 11000) {
-    next(new Error('Duplicate key error: The provided username or email already exists.'));
-  } else {
-    next(error);
-  }
-});
-
+  });
+  
 const RegisterModel = mongoose.model('User', registerSchema);
 
 export default RegisterModel;

@@ -62,13 +62,13 @@ function Register() {
   });
   
 
-  const apiKey = process.env.REACT_APP_API_URL
+
   const handleRegister = async (data) => {
-    
     try {
-     await axios.post(`${apiKey}/register`, data)
+      await axios.post(`${process.env.REACT_APP_API_URL}/register`, data);
+      console.log(process.env.REACT_APP_API_URL)
       console.log(JSON.stringify(data));
-      console.log(apiKey)
+      console.log(process.env.REACT_APP_API_URL);
       alert('You are now registered!');
       
       // Assuming watchFields returns the password value
@@ -76,14 +76,14 @@ function Register() {
       console.log(password);
   
       // Perform any additional registration logic or API calls here
-      
     } catch (error) {
       console.error('Registration failed:', error);
-      console.log(apiKey)
+      console.log(process.env.REACT_APP_API_URL);
       // You can handle the error here, for example, show an error message to the user
       alert('Registration failed. Please try again.');
     }
   };
+  
   
 
   return (

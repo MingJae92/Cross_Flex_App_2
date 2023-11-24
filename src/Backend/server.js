@@ -1,8 +1,11 @@
+// server.js
 import express from 'express';
+import bodyParser from 'body-parser';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import registerRoutes from './register_routes.js';
+import RegisterModel from './register_models.js';
 
 dotenv.config({ path: '../../config/.env' });
 
@@ -10,33 +13,27 @@ const app = express();
 const port = process.env.PORT || 9000;
 const databaseURL = process.env.MONGO_DB_URI;
 
-const connectDB = async () => {
-    try {
-        await mongoose.connect(databaseURL, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
-        console.log('Database connected');
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-        // Set up middleware
-        app.use(cors());
-        app.use(express.json());
+try {
+  mongoose.connect(databaseURL, { useNewUrlParser: true, useUnifiedTopology: true });
+  
+  mongoose.connection.on('connected', () => {
+    console.log('DB CONNECTED!!! HERE WE GO!!!');
+  });
 
-        // Set up routes
-        app.use('/register', registerRoutes);
+  mongoose.connection.on('error', (err) => {
+    console.error('Mongoose connection error:', err);
+  });
+} catch (error) {
+  console.error('Error connecting to the database:', error);
+  process.exit(1); // Exit the process if the database connection fails
+}
 
-        app.listen(port, () => {
-            console.log(`Listening on port ${port}. Here we go!`);
-        });
-    } catch (err) {
-        console.error(err);
-        process.exit(1);
-    }
+app.use('/register', registerRoutes(RegisterModel));
 
-    mongoose.connection.on('error', (err) => {
-        console.error(err);
-    });
-};
-
-// Call the connectDB function
-connectDB();
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});

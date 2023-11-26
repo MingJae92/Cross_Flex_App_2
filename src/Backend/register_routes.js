@@ -11,13 +11,14 @@ const registerRoutes = (RegisterModel) => {
         return res.status(400).json({ message: "Passwords don't match" });
       }
 
-      // Ensure to include confirmPassword when creating a new user
+      // Wait for the create method to complete before sending the success message
       await RegisterModel.create({ username, email, password, confirmPassword });
 
+      console.log('User saved to DB!');
       return res.status(201).json({ message: 'User saved to DB!' });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: error.message || 'Server error' });
+      return res.status(500).json({ message: error.message || 'Server error', error });
     }
   });
 

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'; // Import useRef
+import React from 'react'; // Import useRef
 import { useForm } from 'react-hook-form';
 import { Form, Button } from 'react-bootstrap';
 import RegisterForm from '../img/bg.jpg';
@@ -63,29 +63,41 @@ function Register() {
   
 
 
-  const handleRegister = async (data) => {
+  const HandleRegister = async (data) => {
     try {
-      await axios.post(`${process.env.REACT_APP_API_URL}/register`, data);
-      console.log(process.env.REACT_APP_API_URL)
+      const apiUrl = process.env.REACT_APP_API_URL;
+      if (!apiUrl) {
+        console.error('REACT_APP_API_URL is not defined');
+        return;
+      }
+  
+      await axios.post(`${apiUrl}/register`, data);
+      console.log(apiUrl);
       console.log(JSON.stringify(data));
-      console.log(process.env.REACT_APP_API_URL);
+      console.log(apiUrl);
+      console.log("You are now registered!");
       alert('You are now registered!');
-      
+  
       // Assuming watchFields returns the password value
       const password = watchFields("password");
       console.log(password);
   
       // Perform any additional registration logic or API calls here
     } catch (error) {
-      console.error('Registration failed:', error);
-      console.log(process.env.REACT_APP_API_URL);
-      // You can handle the error here, for example, show an error message to the user
-      alert('Registration failed. Please try again.');
+      // Replace 'your_error_logging_endpoint' with the actual endpoint
+
+      if (error.response) {
+        console.error('Server responded with:', error.response.status, error.response.data);
+        console.log(JSON.stringify(data))
+        alert("Email and user already taken!")
+      } else if (error.request) {
+        console.error('No response received from the server');
+      } else {
+        console.error('Error setting up the request:', error.message);
+      }
     }
   };
   
-  
-
   return (
     <div style={containerStyle}>
       {/* Display the registration form header */}
@@ -93,7 +105,7 @@ function Register() {
       {/* Display the background image */}
       <img src={RegisterForm} alt="Landing Page" style={imageStyle} />
       {/* Define the registration form using React Bootstrap components */}
-      <Form onSubmit={handleSubmit(handleRegister)}>
+      <Form onSubmit={handleSubmit(HandleRegister)}>
         {/* Input field for username */}
         <Form.Group controlId="formBasicUsername">
           <Form.Label>Username</Form.Label>

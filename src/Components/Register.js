@@ -61,8 +61,6 @@ function Register() {
     },
   });
   
-
-
   const HandleRegister = async (data) => {
     try {
       const apiUrl = process.env.REACT_APP_API_URL;

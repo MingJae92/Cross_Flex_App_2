@@ -22,9 +22,14 @@ const registerRoutes = (RegisterModel) => {
       console.error(error);
 
       if (error instanceof MongoError && error.code === 11000) {
-        // Duplicate key error (e.g., duplicate email or username)
-        console.error('Duplicate key error. User already exists:', error.message);
-        return res.status(400).json({ message: 'Duplicate key error. User already exists.' });
+        // Duplicate key error
+        if (error.message.includes('username')) {
+          console.error('Duplicate key error. Username already exists:', error.message);
+          return res.status(400).json({ message: 'Duplicate key error. Username already exists.' });
+        } else if (error.message.includes('email')) {
+          console.error('Duplicate key error. Email already exists:', error.message);
+          return res.status(400).json({ message: 'Duplicate key error. Email already exists.' });
+        }
       }
 
       return res.status(500).json({ message: error.message || 'Server error', error });

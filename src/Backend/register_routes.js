@@ -17,7 +17,12 @@ const registerRoutes = (RegisterModel) => {
 
       console.log('User saved to DB:', newUser);
 
-      return res.status(201).json({ message: 'User saved to DB!' });
+      // // Find the user by username or email after registration
+      // const foundUser = await RegisterModel.findOne({ username, email });
+
+      // console.log('Found user:', foundUser);
+
+      return res.status(201).json({ message: 'User saved to DB!', newUser });
     } catch (error) {
       console.error(error);
 
